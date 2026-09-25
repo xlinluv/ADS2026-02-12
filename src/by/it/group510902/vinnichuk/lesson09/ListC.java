@@ -3,9 +3,12 @@ package by.it.group510902.vinnichuk.lesson09;
 import java.util.*;
 
 public class ListC<E> implements List<E> {
+    //внутренний массив
     private Object[] elements;
+    //количество элементов
     private int size;
     public ListC(){
+        //начальная емкость-10 ячеек
         this.elements=new Object[10];
         this.size=0;
     }
@@ -18,43 +21,50 @@ public class ListC<E> implements List<E> {
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     @Override
+    //вывод элементов в строку
     public String toString() {
+        //начало строки
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < size; i++) {
             sb.append(elements[i]);
+            //если не последний элемент, то запятая
             if (i < size - 1) {
                 sb.append(", ");
             }
         }
+        //если последний
         sb.append("]");
         return sb.toString();
     }
 
     @Override
     public boolean add(E e) {
+        //если не хватает размера, то увеличиваем и переносим данные
         if (size == elements.length) {
             Object[] newElements = new Object[elements.length * 3 / 2 + 1];
-            // Вручную копируем данные в новый увеличенный массив без сторонних классов
             for (int i = 0; i < elements.length; i++) {
                 newElements[i] = elements[i];
             }
             elements = newElements;
         }
+        //добавляем элемент
         elements[size++] = e;
         return true;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    //удаление по элементу
     public E remove(int index) {
             E removedElement = (E) elements[index];
+            //проходимся и смещаем справа налево
 
             for (int i = index; i < size - 1; i++) {
                 elements[i] = elements[i + 1];
             }
-
+    //уменьшаем счетчик и обнуляем последний элемент
             size--;
             elements[size] = null;
+            //выводим удаленный элемент
             return removedElement;
     }
 
@@ -64,6 +74,8 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
+    //добавляем по индексу, проходимся и сдвигаем слева направо
+    //начинаем с конца
     public void add(int index, E element) {
         if (size == elements.length) {
             Object[] newElements = new Object[elements.length * 3 / 2 + 1];
@@ -83,7 +95,9 @@ public class ListC<E> implements List<E> {
 
     @Override
     public boolean remove(Object o) {
+        //где находится элемент
         int index=indexOf(o);
+        //проверяем индекс
         if (index >= 0){
             remove(index);
             return true;
@@ -92,21 +106,24 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public E set(int index, E element) {
+        //заменяем старый элемент на новый
         E oldElement = (E) elements[index];
         elements[index] = element;
+        //вывод того, что было до
         return oldElement;
     }
 
 
     @Override
+    //есть ли что-то
     public boolean isEmpty() {
         return size==0;
     }
 
 
     @Override
+    //полное удаление и размер =0
     public void clear() {
         for (int i=0; i<size; i++){
             elements[i]=null;
@@ -115,6 +132,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
+    //ищем индекс элемента
     public int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++) {
@@ -122,6 +140,7 @@ public class ListC<E> implements List<E> {
             }
         } else {
             for (int i = 0; i < size; i++) {
+                //сравниваем число
                 if (o.equals(elements[i])) return i;
             }
         }
@@ -130,16 +149,19 @@ public class ListC<E> implements List<E> {
 
     @Override
     @SuppressWarnings("unchecked")
+    //по индексу возвращаем то, что там находится
     public E get(int index) {
         return (E) elements[index];
     }
 
     @Override
     public boolean contains(Object o) {
+        //есть ли элемент
         return indexOf(o) >=0;
     }
 
     @Override
+    //ищем элемент, но справа налево
     public int lastIndexOf(Object o) {
         if (o == null) {
             for (int i = size - 1; i >= 0; i--) {
@@ -154,11 +176,13 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
+    //совпадают ли переданные элементы с теми, которые уже были
     public boolean containsAll(Collection<?> c) {
         // Проходим по каждому элементу переданной коллекции
         for (Object item : c) {
             // Если хотя бы одного элемента у нас нет, возвращаем false
             if (!contains(item)) {
+                //если хотя бы одной нет
                 return false;
             }
         }
@@ -166,11 +190,12 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
+    //добавляем переданные элементы в конец
     public boolean addAll(Collection<? extends E> c) {
-        // Если переданная коллекция пустая, то список не изменился
+        // если переданная коллекция пустая, то список не изменился
         if (c.isEmpty()) return false;
 
-        // Поочередно добавляем каждый элемент коллекции в конец через метод add()
+        // поочередно добавляем каждый элемент коллекции в конец через метод add()
         for (E item : c) {
             add(item);
         }
@@ -178,6 +203,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
+    //поочередно добавляем элементы коллекции по индексу, двигая старые элементы
     public boolean addAll(int index, Collection<? extends E> c) {
         if (c.isEmpty()) return false;
 
@@ -190,6 +216,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
+    //удаление, если совпадает, сравнивая с новой коллекцией
     public boolean removeAll(Collection<?> c) {
         boolean isModified = false;
         // Перебираем все элементы списка с начала до конца
@@ -197,6 +224,7 @@ public class ListC<E> implements List<E> {
             // Если переданная коллекция содержит текущий элемент, удаляем его
             if (c.contains(elements[i])) {
                 remove(i);
+                //делаем шаг назад и снова проверяем
                 i--;
                 isModified = true;
             }
@@ -205,6 +233,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
+    //удаление, если нет, сравнивая с новой коллекцией
     public boolean retainAll(Collection<?> c) {
         boolean isModified = false;
         for (int i = 0; i < size; i++) {
@@ -247,6 +276,7 @@ public class ListC<E> implements List<E> {
 
     @Override
     public Object[] toArray() {
+        //создаем новый массив и перезаписываем
         Object[] exactArray = new Object[size];
         for (int i = 0; i < size; i++) {
             exactArray[i] = elements[i];
@@ -266,12 +296,14 @@ public class ListC<E> implements List<E> {
             private int cursor = 0;
 
             @Override
+            //дошел ли до конца
             public boolean hasNext() {
                 return cursor < size;
             }
 
             @Override
             @SuppressWarnings("unchecked")
+            //если нечего выдавать
             public E next() {
                 if (cursor >= size) {
                     throw new NoSuchElementException();
